@@ -1,7 +1,9 @@
 <template>
     <div class="container my-24 grid max-w-3xl gap-8">
         <div class="flex gap-4">
-            <Button @click="dialogStore.showDialog('scan-book')">
+            <Button
+                @click="dialogStore.showDialog('scan-book')"
+            >
                 <Barcode class="size-4" />
                 Scan a book
             </Button>
@@ -10,7 +12,11 @@
         <div class="h-screen bg-blue-50" />
         <div class="h-screen bg-success" />
 
-        <ScanBookDialog v-if="scanBookDialogVisible" />
+        <ScanBookDialog
+            v-if="scanBookDialogVisible"
+            close-on-detect
+            @scanned="(e) => console.log('scanned:', e)"
+        />
     </div>
 </template>
 
