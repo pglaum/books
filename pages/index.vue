@@ -15,7 +15,7 @@
         <ScanBookDialog
             v-if="scanBookDialogVisible"
             close-on-detect
-            @scanned="(e) => console.log('scanned:', e)"
+            @scanned="(e) => router.push(`/search?q=isbn:${e}`)"
         />
     </div>
 </template>
@@ -23,6 +23,7 @@
 <script setup lang="ts">
 import { Barcode, } from 'lucide-vue-next'
 
+const router = useRouter()
 const dialogStore = useDialogStore()
 const scanBookDialogVisible = dialogStore.isVisibleComputed('scan-book')
 

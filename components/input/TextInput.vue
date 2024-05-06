@@ -24,6 +24,7 @@
             :aria-describedby="id"
             :placeholder="placeholder"
             :name="name ? name : undefined"
+            v-bind="$attrs"
             @blur="emit('blur', $event)"
             @focus="selectOnFocus && $event.target.select()"
         />

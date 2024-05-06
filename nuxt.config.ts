@@ -43,6 +43,11 @@ export default defineNuxtConfig({
     pinia: {
         storesDirs: [ './stores/**', ],
     },
+    runtimeConfig: {
+        public: {
+            googleApiKey: '',
+        },
+    },
     shadcn: {
         prefix: '',
         componentDir: './components/ui',
