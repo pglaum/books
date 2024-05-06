@@ -1,10 +1,12 @@
 <template>
-    <GDialog>
+    <GDialog fullscreen>
         <template #title>
-            Delete Template
+            Scan a book
         </template>
         <template #body>
-            Do you really want to delete this template?
+            <div>
+                hi
+            </div>
         </template>
         <template #footer>
             <Button
@@ -13,26 +15,10 @@
             >
                 Cancel
             </Button>
-            <Button
-                variant="destructive"
-                @click="remove()"
-            >
-                Delete
-            </Button>
         </template>
     </GDialog>
 </template>
 
 <script setup lang="ts">
-const emit = defineEmits<{
-    (e: 'delete', payload: null): void
-}>()
-
 const dialogStore = useDialogStore()
-
-const remove = () => {
-    emit('delete', null)
-    dialogStore.closeDialog()
-}
 </script>
-

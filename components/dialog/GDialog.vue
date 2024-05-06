@@ -3,9 +3,10 @@
         v-model:open="open"
     >
         <DialogContent
-            class="max-h-[90dvh] w-full grid-rows-[auto_minmax(0,1fr)_auto] p-0"
+            class="w-full grid-rows-[auto_minmax(0,1fr)_auto] p-0"
             :class="[
-                large ? 'max-w-3xl' : 'max-w-xl',
+                fullscreen ? 'max-w-full' : large ? 'max-w-3xl' : 'max-w-xl',
+                fullscreen ? 'h-full max-h-full sm:rounded-none' : 'max-h-[90dvh]'
             ]"
         >
             <DialogHeader class="p-6 pb-0">
@@ -68,6 +69,7 @@ const emit = defineEmits<{
 defineProps<{
     large?: string,
     autoFocus?: boolean
+    fullscreen?: boolean,
 }>()
 
 const dialog = ref<HTMLElement>()

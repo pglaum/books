@@ -65,7 +65,7 @@ const signUp = async () => {
     if (error) {
         console.error('Error signing up:', error.message)
         toast({
-            title: 'Error signing in',
+            title: 'Error signing up',
             description: error.message,
             variant: 'destructive',
         })

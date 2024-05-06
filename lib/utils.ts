@@ -11,6 +11,6 @@ export const dateToString = (date: Date): string => {
   return localISOTime
 }
 
-export const clone = (obj) => {
+export const clone = (obj: any) => {
   return JSON.parse(JSON.stringify(obj))
 }

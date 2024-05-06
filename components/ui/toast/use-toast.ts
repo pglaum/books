@@ -3,7 +3,7 @@ import { computed, ref, } from 'vue'
 
 import type { ToastProps, } from '.'
 
-const TOAST_LIMIT = 1
+const TOAST_LIMIT = 3
 const TOAST_REMOVE_DELAY = 1000000
 
 export type StringOrVNode =
@@ -85,8 +85,10 @@ function dispatch (action: Action) {
 
     case actionTypes.UPDATE_TOAST:
       state.value.toasts = state.value.toasts.map((t) =>
-        t.id === action.toast.id ? { ...t,
-...action.toast, } : t
+        t.id === action.toast.id ? {
+          ...t,
+          ...action.toast,
+        } : t
       )
       break
 
@@ -126,8 +128,10 @@ function useToast () {
   return {
     toasts: computed(() => state.value.toasts),
     toast,
-    dismiss: (toastId?: string) => dispatch({ type: actionTypes.DISMISS_TOAST,
-toastId, }),
+    dismiss: (toastId?: string) => dispatch({
+      type: actionTypes.DISMISS_TOAST,
+      toastId,
+    }),
   }
 }
 
@@ -139,12 +143,16 @@ function toast (props: Toast) {
   const update = (props: ToasterToast) =>
     dispatch({
       type: actionTypes.UPDATE_TOAST,
-      toast: { ...props,
-id, },
+      toast: {
+        ...props,
+        id,
+      },
     })
 
-  const dismiss = () => dispatch({ type: actionTypes.DISMISS_TOAST,
-toastId: id, })
+  const dismiss = () => dispatch({
+    type: actionTypes.DISMISS_TOAST,
+    toastId: id,
+  })
 
   dispatch({
     type: actionTypes.ADD_TOAST,

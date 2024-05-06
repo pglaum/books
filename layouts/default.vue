@@ -11,11 +11,8 @@
                     uppercase
                     text-muted-foreground"
             >
-                <img
-                    class="size-6 rounded"
-                    src="/gyrnal_logo.png"
-                >
-                Gyrnal
+                <BookCopy class="size-6" />
+                Books
             </NuxtLink>
             <div class="flex gap-4">
                 <button
@@ -28,10 +25,12 @@
             </div>
         </div>
         <slot />
+        <Toaster />
     </div>
 </template>
 
 <script setup lang="ts">
+import { BookCopy, } from 'lucide-vue-next'
 
 import { toast, } from '~/components/ui/toast'
 
