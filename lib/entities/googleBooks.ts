@@ -23,9 +23,9 @@ export const BookVolumeSchema = z.object({
         pageCount: z.number().nullish(),
         printedPageCount: z.number().nullish(),
         dimensions: z.object({
-            height: z.string(),
-            width: z.string(),
-            thickness: z.string(),
+            height: z.string().nullish(),
+            width: z.string().nullish(),
+            thickness: z.string().nullish(),
         }).nullish(),
         printType: z.string(),
         categories: z.array(z.string()).nullish(),
@@ -96,7 +96,7 @@ export const BookVolumeSchema = z.object({
 export const SearchResultSchema = z.object({
     kind: z.string(),
     totalItems: z.number(),
-    items: z.array(BookVolumeSchema),
+    items: z.array(BookVolumeSchema).nullish(),
 })
 
 export type BookVolume = z.infer<typeof BookVolumeSchema>

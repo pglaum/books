@@ -14,7 +14,7 @@ const { toasts, } = useToast()
             v-for="toast in toasts"
             :key="toast.id"
             v-bind="toast"
-            class="my-1"
+            class="my-2"
         >
             <div class="grid gap-1">
                 <ToastTitle v-if="toast.title">

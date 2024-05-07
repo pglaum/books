@@ -1,31 +1,136 @@
 <template>
     <div class="container my-24 grid max-w-3xl gap-8">
-        <div class="flex gap-4">
-            <Button
-                @click="dialogStore.showDialog('scan-book')"
+        <div class="grid gap-4">
+            <div>
+                <Button
+                    @click="dialogStore.showDialog('scan-book')"
+                >
+                    <Barcode class="size-4" />
+                    Scan a book
+                </Button>
+            </div>
+            <form
+                class="flex items-start gap-2"
+                @submit.prevent="doSearch"
             >
-                <Barcode class="size-4" />
-                Scan a book
-            </Button>
+                <TextInput
+                    v-model="query"
+                    placeholder="Search"
+                />
+                <Button
+                    variant="outline"
+                    type="submit"
+                >
+                    <Search class="size-4" />
+                    Search
+                </Button>
+            </form>
         </div>
 
-        <div class="h-screen bg-blue-50" />
-        <div class="h-screen bg-success" />
+        <div class="grid gap-4">
+            <H2>Wishlist</H2>
+
+            <div
+                v-if="wishlistLoading"
+                class="flex items-center gap-2"
+            >
+                <Loader2 class="size-4 animate-spin" />
+                Loading
+            </div>
+            <div
+                v-else-if="wishlist && wishlist.length"
+                class="grid grid-cols-3"
+            >
+                <BookItem
+                    v-for="book in wishlist"
+                    :key="book.google_book_id"
+                    :book="book"
+                />
+            </div>
+            <div
+                v-else
+                class="text-muted-foreground"
+            >
+                No books on your wishlist.
+            </div>
+        </div>
+
+        <div class="grid gap-4">
+            <H2>Library</H2>
+
+            <div
+                v-if="libraryLoading"
+                class="flex items-center gap-2"
+            >
+                <Loader2 class="size-4 animate-spin" />
+                Loading
+            </div>
+            <div
+                v-else-if="library && library.length"
+                class="grid grid-cols-2 gap-2 md:grid-cols-3"
+            >
+                <BookItem
+                    v-for="book in library"
+                    :key="book.google_book_id"
+                    :book="book"
+                />
+            </div>
+            <div
+                v-else
+                class="text-muted-foreground"
+            >
+                No books in your library.
+            </div>
+        </div>
 
         <ScanBookDialog
             v-if="scanBookDialogVisible"
             close-on-detect
             @scanned="(e) => router.push(`/search?q=isbn:${e}`)"
         />
+        <StoredBookDialog
+            v-if="storedBookDialogVisible"
+            @closed="loadBooks"
+        />
     </div>
 </template>
 
 <script setup lang="ts">
-import { Barcode, } from 'lucide-vue-next'
+import { Barcode, Loader2, Search, } from 'lucide-vue-next'
+
+import { getBooks, } from '~/lib/api/book'
+import { type Book, BookListEnum, } from '~/lib/entities/book'
 
 const router = useRouter()
 const dialogStore = useDialogStore()
 const scanBookDialogVisible = dialogStore.isVisibleComputed('scan-book')
+const storedBookDialogVisible = dialogStore.isVisibleComputed('stored-book')
+
+const wishlist = ref<Book[]>([])
+const wishlistLoading = ref<boolean>(true)
+const library = ref<Book[]>([])
+const libraryLoading = ref<boolean>(true)
+
+const query = ref('')
+
+const doSearch = () => {
+    router.push(`/search?q=${query.value}`)
+}
+
+const loadBooks = () => {
+    getBooks(BookListEnum.Values.LIBRARY).then((result) => {
+        library.value = result
+        libraryLoading.value = false
+    })
+    getBooks(BookListEnum.Values.WISHLIST).then((result) => {
+        wishlist.value = result
+        wishlistLoading.value = false
+    })
+}
+
+onMounted(() => {
+    loadBooks()
+})
 
 useHead({
     title: 'Books',

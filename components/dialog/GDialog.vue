@@ -1,7 +1,5 @@
 <template>
-    <Dialog
-        v-model:open="open"
-    >
+    <Dialog v-model:open="open">
         <DialogContent
             class="w-full grid-rows-[auto_minmax(0,1fr)_auto] p-0"
             :class="[
@@ -65,9 +63,10 @@ import { X, } from 'lucide-vue-next'
 const emit = defineEmits<{
     (e: 'cancel', payload: null): void,
     (e: 'confirm', payload: null): void,
+    (e: 'closed', payload: null): void,
 }>()
 defineProps<{
-    large?: string,
+    large?: boolean,
     autoFocus?: boolean
     fullscreen?: boolean,
 }>()
@@ -78,6 +77,7 @@ const dialogStore = useDialogStore()
 const { close, } = storeToRefs(dialogStore)
 
 const hideDialog = () => {
+    emit('closed', null)
     open.value = false
 
     setTimeout(() => {

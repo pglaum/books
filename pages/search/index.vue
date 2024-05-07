@@ -1,43 +1,64 @@
 <template>
     <div class="container my-24 grid max-w-3xl gap-8">
-        <form
-            class="flex items-start gap-2"
-            @submit.prevent="doSearch"
-        >
-            <TextInput
-                v-model="search"
-                description="Use 'isbn:1234567890' to search for a specific ISBN"
-                :disabled="isLoading"
-            />
-            <Button
-                variant="outline"
-                type="submit"
-                :disabled="isLoading"
+        <div class="grid gap-4">
+            <div>
+                <Button
+                    @click="dialogStore.showDialog('scan-book')"
+                >
+                    <Barcode class="size-4" />
+                    Scan a book
+                </Button>
+            </div>
+            <form
+                class="flex items-start gap-2"
+                @submit.prevent="doSearch"
             >
-                <Loader2
-                    v-if="isLoading"
-                    class="size-4 animate-spin"
+                <TextInput
+                    v-model="search"
+                    placeholder="Use 'isbn:1234567890' to search for a specific ISBN"
+                    :disabled="isLoading"
                 />
-                <Search
-                    v-else
-                    class="size-4"
-                />
-                Search
-            </Button>
-        </form>
+                <Button
+                    variant="outline"
+                    type="submit"
+                    :disabled="isLoading"
+                >
+                    <Loader2
+                        v-if="isLoading"
+                        class="size-4 animate-spin"
+                    />
+                    <Search
+                        v-else
+                        class="size-4"
+                    />
+                    Search
+                </Button>
+            </form>
+        </div>
 
-        <div class="divide-y divide-border rounded-lg border border-border">
+        <div
+            v-if="isLoading"
+            class="flex items-center justify-center gap-2"
+        >
+            <Loader2 class="size-4 animate-spin" />
+            Loading
+        </div>
+        <div
+            v-else-if="results.length"
+            class="divide-y divide-border rounded-lg border border-border"
+        >
             <div
                 v-for="result in results"
                 :key="result.id"
                 class="flex
                     cursor-pointer
                     items-center
-                    gap-4
+                    gap-2
                     px-4
                     py-2
                     transition-colors
                     hover:bg-muted/50"
+                @click="dialogStore.showDialog('searched-book', result)"
             >
                 <div class="aspect-[3/4] h-32">
                     <img
@@ -83,11 +104,24 @@
                 </div>
             </div>
         </div>
+        <div
+            v-else
+            class="text-muted-foreground"
+        >
+            No results.
+        </div>
+
+        <ScanBookDialog
+            v-if="scanBookDialogVisible"
+            close-on-detect
+            @scanned="(e) => router.push(`/search?q=isbn:${e}`)"
+        />
+        <SearchedBookDialog v-if="searchedBookDialogVisible" />
     </div>
 </template>
 
 <script setup lang="ts">
-import { ImageOff, Loader2, Search, } from 'lucide-vue-next'
+import { Barcode, ImageOff, Loader2, Search, } from 'lucide-vue-next'
 
 import { searchBooks, } from '~/lib/api/googleBooks'
 import { type BookVolume, } from '~/lib/entities/googleBooks'
@@ -96,11 +130,16 @@ const route = useRoute()
 const search = ref<string>('')
 const isLoading = ref<boolean>(false)
 
+const dialogStore = useDialogStore()
+const scanBookDialogVisible = dialogStore.isVisibleComputed('scan-book')
+const searchedBookDialogVisible = dialogStore.isVisibleComputed('searched-book')
+
 const searchResultsStore = useSearchResultsStore()
 const { results, }: {results: Ref<BookVolume[]>} = storeToRefs(searchResultsStore)
 
 const doSearch = async () => {
     isLoading.value = true
+    results.value = []
     results.value = await searchBooks(search.value)
     isLoading.value = false
 }
