@@ -2,6 +2,7 @@
 	root * /nuxt
 
 	file_server
+	try_files {path} {path}/ /index.html
 	tls internal {
 		on_demand
 	}
