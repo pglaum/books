@@ -119,6 +119,10 @@ import { type Book, BookListEnum, } from '~/lib/entities/book'
 
 const route = useRoute()
 const router = useRouter()
+
+const configStore = useConfigStore()
+const { wishlistOrder, } = storeToRefs(configStore)
+
 const dialogStore = useDialogStore()
 const scanBookDialogVisible = dialogStore.isVisibleComputed('scan-book')
 const storedBookDialogVisible = dialogStore.isVisibleComputed('stored-book')
@@ -141,7 +145,7 @@ watch(() => route.query.orderBy, (newValue) => {
     reloadPage()
 })
 
-const compare = (a, b) => {
+const compare = (a: any, b: any): number => {
     if (a > b) {
         return 1
     }
@@ -155,14 +159,31 @@ const loadBooks = async () => {
     wishlistLoading.value = true
     wishlist.value = (await getBooks(BookListEnum.Values.WISHLIST, 0)).sort((a, b) => {
         switch (orderBy.value) {
+            case 'updated':
+                return compare(b.updated_at, a.updated_at)
             case 'created':
                 return compare(b.created_at, a.created_at)
             case 'title':
                 return compare(a.google_book_data.volumeInfo.title, b.google_book_data.volumeInfo.title)
-            default:
-                return compare(b.updated_at, a.updated_at)
         }
+        return 0
     })
+    if (orderBy.value === '') {
+        await configStore.getWishlistOrder()
+        const res: Array<Book> = []
+        wishlistOrder.value.forEach((id) => {
+            const idx = wishlist.value.findIndex((book) => book.id === id)
+            if (idx >= 0 && !res.find((b) => b.id === id)) {
+                res.push(wishlist.value[idx])
+            }
+        })
+        wishlist.value.forEach((book) => {
+            if (!res.find((b) => b.id === book.id)){
+                res.push(book)
+            }
+        })
+        wishlist.value = res
+    }
     wishlistLoading.value = false
 }
 
@@ -184,6 +205,8 @@ const reloadPage = () => {
 
 const saveOrder = () => {
     isLoading.value = true
+    const order = wishlist.value.map((book) => book.id)
+    configStore.setWishlistOrder(order)
     isLoading.value = false
 }
 

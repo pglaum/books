@@ -16,7 +16,7 @@
             >
             <div
                 v-else
-                class="flex items-center justify-center bg-muted"
+                class="flex size-full items-center justify-center bg-muted"
             >
                 <ImageOff class="size-8 text-muted-foreground" />
             </div>
