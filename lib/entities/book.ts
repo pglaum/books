@@ -26,7 +26,7 @@ export const BookSchema = z.object({
     updated_at: z.string().nullish(),
     list: BookListEnum.nullable(),
     is_read: z.boolean().default(false).nullable(),
-    events: z.array(BookEventSchema).default([]).nullish(),
+    events: z.array(BookEventSchema).nullish(),
 })
 
 export type BookList = z.infer<typeof BookListEnum>

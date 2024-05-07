@@ -5,7 +5,6 @@ export const insertBook = async (book: Book) => {
     const supabase = useSupabaseClient()
     const { toast, } = useToast()
 
-    delete book.events
     const { data, error, } = await supabase.from('book').insert(book).select().single()
 
     if (error) {

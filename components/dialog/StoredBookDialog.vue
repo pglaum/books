@@ -21,6 +21,7 @@
                         class="size-full object-contain object-center"
                     >
                 </div>
+
                 <div class="grid gap-2">
                     <div
                         class="flex items-center gap-4"
@@ -237,7 +238,6 @@ const isLoading = ref<boolean>(false)
 const isOpen = ref<boolean>(false)
 const moreOptions = ref<boolean>(false)
 const showReallyDelete = ref<boolean>(false)
-console.log(book.value)
 
 const vi = computed(() => book.value.google_book_data.volumeInfo)
 
