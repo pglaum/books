@@ -5,18 +5,19 @@
         </template>
         <template #body>
             <div class="grid gap-4">
-                <div class="font-medium text-destructive">
+                <div
+                    v-if="error"
+                    class="font-medium text-destructive"
+                >
                     {{ error }}
                 </div>
-                <select v-model="selectedDevice">
-                    <option
-                        v-for="device in devices"
-                        :key="device.label"
-                        :value="device"
-                    >
-                        {{ device.label }}
-                    </option>
-                </select>
+                <SelectInput
+                    v-model="selectedDevice"
+                    :options="devices"
+                    key-key="label"
+                    :value-key="null"
+                    label-key="label"
+                />
                 <ClientOnly>
                     <QrcodeStream
                         v-if="selectedDevice !== null"
