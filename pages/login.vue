@@ -48,8 +48,8 @@
 <script setup lang="ts">
 import { useToast, } from '~/components/ui/toast'
 
-const router = useRouter()
 const supabase = useSupabaseClient()
+const user = useSupabaseUser()
 const { toast, } = useToast()
 
 const email = ref('')
@@ -73,9 +73,14 @@ const signIn = async () => {
             title: 'Logged in',
             variant: 'success',
         })
-        router.push('/')
     }
 }
+
+watchEffect(() => {
+    if (user.value) {
+        navigateTo('/confirm')
+    }
+})
 
 useHead({
     title: 'Login to Books',

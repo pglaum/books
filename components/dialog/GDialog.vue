@@ -8,24 +8,26 @@
             ]"
         >
             <DialogHeader class="p-6 pb-0">
-                <DialogTitle class="flex items-center justify-between">
-                    <h1 class="text-start text-2xl">
-                        <slot name="title" />
-                    </h1>
+                <slot name="header">
+                    <DialogTitle class="flex items-center justify-between">
+                        <h1 class="text-start text-2xl">
+                            <slot name="title" />
+                        </h1>
 
-                    <Button
-                        variant="ghost"
-                        size="icon"
-                        @click="open = false"
-                    >
-                        <X class="size-6" />
-                        <span class="sr-only">Close</span>
-                    </Button>
-                </DialogTitle>
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            @click="open = false"
+                        >
+                            <X class="size-6" />
+                            <span class="sr-only">Close</span>
+                        </Button>
+                    </DialogTitle>
 
-                <DialogDescription class="text-start">
-                    <slot name="description" />
-                </DialogDescription>
+                    <DialogDescription class="text-start">
+                        <slot name="description" />
+                    </DialogDescription>
+                </slot>
             </DialogHeader>
 
             <div

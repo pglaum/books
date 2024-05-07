@@ -153,7 +153,6 @@ const doSearch = () => {
 
 const loadBooks = () => {
     configStore.getWishlistOrder().then((order) => {
-        console.log('configstore', order)
         if (order) {
             getBooksByIds(order.slice(0, 5)).then((result) => {
                 wishlist.value = []

@@ -11,6 +11,14 @@
         </template>
 
         <template #body>
+            <div class="flex items-center justify-center">
+                <img
+                    v-if="vi.imageLinks?.thumbnail"
+                    :src="vi.imageLinks?.thumbnail"
+                    class="float-left me-2 h-48"
+                >
+            </div>
+
             <div class="grid gap-2">
                 <div
                     v-if="book.list === BookListEnum.Values.LIBRARY"
@@ -113,19 +121,11 @@
                 </div>
             </div>
 
-            <div class="clear-both">
-                <img
-                    v-if="vi.imageLinks?.thumbnail"
-                    :src="vi.imageLinks?.thumbnail"
-                    class="float-left me-2 h-48"
-                >
-                <div
-                    v-if="vi.description"
-                    class="prose"
-                    v-html="vi.description"
-                />
-            </div>
-
+            <div
+                v-if="vi.description"
+                class="prose"
+                v-html="vi.description"
+            />
             <Table>
                 <TableBody>
                     <TableRow v-if="vi.authors">

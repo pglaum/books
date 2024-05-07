@@ -86,11 +86,9 @@ onMounted(async () => {
 })
 
 const onDetect = (detectedCodes: Array<DetectedBarcode>) => {
-    console.log('detected', detectedCodes)
     try {
         const isbn = detectedCodes[0].rawValue
         emit('scanned', isbn)
-        console.log('close on detect', closeOnDetect.value)
         if (closeOnDetect.value) {
             dialogStore.closeDialog()
         }
