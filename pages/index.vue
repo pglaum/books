@@ -32,7 +32,12 @@
                 <H2>Wishlist</H2>
 
                 <NuxtLink
-                    class="inline-flex items-center gap-2 hover:underline"
+                    class="inline-flex
+                        items-center
+                        gap-2
+                        text-primary
+                        underline-offset-4
+                        hover:underline"
                     to="/wishlist"
                 >
                     Show all
@@ -49,7 +54,7 @@
             </div>
             <div
                 v-else-if="wishlist && wishlist.length"
-                class="grid grid-cols-3"
+                class="grid grid-cols-2 gap-2 md:grid-cols-3"
             >
                 <BookItem
                     v-for="book in wishlist"
@@ -70,7 +75,12 @@
                 <H2>Library</H2>
 
                 <NuxtLink
-                    class="inline-flex items-center gap-2 hover:underline"
+                    class="inline-flex
+                        items-center
+                        gap-2
+                        text-primary
+                        underline-offset-4
+                        hover:underline"
                     to="/library"
                 >
                     Show all

@@ -4,12 +4,12 @@
             class="w-full grid-rows-[auto_minmax(0,1fr)_auto] p-0"
             :class="[
                 fullscreen ? 'max-w-full' : large ? 'max-w-3xl' : 'max-w-xl',
-                fullscreen ? 'h-full max-h-full sm:rounded-none' : 'max-h-[90dvh]'
+                fullscreen ? 'h-full max-h-full sm:rounded-none' : 'max-h-full sm:max-h-[90dvh]'
             ]"
         >
             <DialogHeader class="p-6 pb-0">
                 <DialogTitle class="flex items-center justify-between">
-                    <h1 class="text-2xl">
+                    <h1 class="text-start text-2xl">
                         <slot name="title" />
                     </h1>
 
@@ -23,7 +23,7 @@
                     </Button>
                 </DialogTitle>
 
-                <DialogDescription>
+                <DialogDescription class="text-start">
                     <slot name="description" />
                 </DialogDescription>
             </DialogHeader>

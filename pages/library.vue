@@ -1,7 +1,7 @@
 <template>
     <div class="container my-24 grid max-w-3xl gap-8">
         <div class="flex flex-wrap items-end gap-4">
-            <H1>Wishlist</H1>
+            <H1>Library</H1>
 
             <div class="ms-auto flex flex-wrap gap-2">
                 <Button
@@ -26,77 +26,36 @@
                 v-model="orderBy"
                 :options="orderByOptions"
                 label="Order by"
-                placeholder="Manual"
                 class="max-w-48"
-                allow-clear
                 @update:model-value="reloadPage()"
             />
-            <div
-                v-if="orderBy === ''"
-                class="ms-auto flex gap-2"
-            >
-                <Button
-                    v-if="!reorderItems"
-                    variant="outline"
-                    size="sm"
-                    @click="reorderItems=true"
-                >
-                    Reorder
-                </Button>
-                <Button
-                    v-else
-                    size="sm"
-                    :disabled="isLoading"
-                    @click="saveOrder()"
-                >
-                    Save order
-                </Button>
-                <Button
-                    v-if="reorderItems"
-                    variant="outline"
-                    size="sm"
-                    :disabled="isLoading"
-                    @click="loadBooks(); reorderItems = false"
-                >
-                    Cancel
-                </Button>
-            </div>
         </div>
 
         <div
-            v-if="wishlistLoading && !wishlist.length"
+            v-if="libraryLoading && !library.length"
             class="flex items-center gap-2"
         >
             <Loader2 class="size-4 animate-spin" />
             Loading
         </div>
-        <ClientOnly v-else-if="wishlist && wishlist.length">
-            <draggable
-                :animation="200"
-                group="wishlist"
-                ghost-class="bg-muted"
-                handle=".handle"
-                tag="div"
-                class="grid grid-cols-2 md:grid-cols-3"
-                :list="wishlist"
-                @start="dragging = true"
-                @end="dragging = false"
-            >
-                <BookItem
-                    v-for="book in wishlist"
-                    :key="book.google_book_id"
-                    :class="{
-                        'handle': reorderItems
-                    }"
-                    :book="book"
-                />
-            </draggable>
-        </ClientOnly>
+        <div
+            v-else-if="library && library.length"
+            class="grid grid-cols-2 md:grid-cols-3"
+        >
+            <BookItem
+                v-for="book in library"
+                :key="book.google_book_id"
+                :class="{
+                    'handle': reorderItems
+                }"
+                :book="book"
+            />
+        </div>
         <div
             v-else
             class="text-muted-foreground"
         >
-            No books on your wishlist.
+            No books on your library.
         </div>
 
         <ScanBookDialog
@@ -123,12 +82,12 @@ const dialogStore = useDialogStore()
 const scanBookDialogVisible = dialogStore.isVisibleComputed('scan-book')
 const storedBookDialogVisible = dialogStore.isVisibleComputed('stored-book')
 
-const wishlist = ref<Book[]>([])
-const wishlistLoading = ref<boolean>(true)
+const library = ref<Book[]>([])
+const libraryLoading = ref<boolean>(true)
 const isLoading = ref<boolean>(false)
 
 const dragging = ref<boolean>(false)
-const orderBy = ref<string>(route.query.orderBy?.toString() ?? '')
+const orderBy = ref<string>(route.query.orderBy?.toString() ?? 'title')
 const orderByOptions = ref([
     { value: 'created', label: 'Created At', },
     { value: 'updated', label: 'Updated At', },
@@ -137,7 +96,7 @@ const orderByOptions = ref([
 const reorderItems = ref<boolean>(false)
 
 watch(() => route.query.orderBy, (newValue) => {
-    orderBy.value = newValue?.toString() ?? ''
+    orderBy.value = newValue?.toString() ?? 'title'
     reloadPage()
 })
 
@@ -152,8 +111,8 @@ const compare = (a, b) => {
 }
 
 const loadBooks = async () => {
-    wishlistLoading.value = true
-    wishlist.value = (await getBooks(BookListEnum.Values.WISHLIST, 0)).sort((a, b) => {
+    libraryLoading.value = true
+    library.value = (await getBooks(BookListEnum.Values.LIBRARY)).sort((a, b) => {
         switch (orderBy.value) {
             case 'created':
                 return compare(b.created_at, a.created_at)
@@ -163,7 +122,7 @@ const loadBooks = async () => {
                 return compare(b.updated_at, a.updated_at)
         }
     })
-    wishlistLoading.value = false
+    libraryLoading.value = false
 }
 
 const reloadPage = () => {
@@ -177,7 +136,6 @@ const reloadPage = () => {
     if (!orderBy.value) {
         delete navTo.query.orderBy
     }
-    reorderItems.value = false
     navigateTo(navTo)
     loadBooks()
 }

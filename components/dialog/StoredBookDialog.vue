@@ -11,6 +11,108 @@
         </template>
 
         <template #body>
+            <div class="grid gap-2">
+                <div
+                    v-if="book.list === BookListEnum.Values.LIBRARY"
+                    class="flex items-center gap-4"
+                >
+                    <div class="flex items-center gap-2 text-success">
+                        <CheckCircle class="size-4" />
+                        This book is in your library
+                    </div>
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        :disabled="isLoading"
+                        @click="setList(BookListEnum.Values.WISHLIST)"
+                    >
+                        Move to wishlist
+                    </Button>
+                </div>
+                <div
+                    v-else-if="book.list === BookListEnum.Values.WISHLIST"
+                    class="flex items-center gap-4"
+                >
+                    <div class="flex items-center gap-2 text-muted-foreground">
+                        <Scroll class="size-4" />
+                        This book is on your wishlist
+                    </div>
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        :disabled="isLoading"
+                        @click="setList(BookListEnum.Values.LIBRARY)"
+                    >
+                        Add to library
+                    </Button>
+                </div>
+                <div
+                    v-if="book.is_read"
+                    class="flex items-center gap-4"
+                >
+                    <div class="flex items-center gap-2 text-success">
+                        <BookCheck class="size-4" />
+                        You've read the book
+                    </div>
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        :disabled="isLoading"
+                        @click="readBook(false)"
+                    >
+                        Mark as unread
+                    </Button>
+                </div>
+                <div
+                    v-else
+                    class="flex items-center gap-4"
+                >
+                    <div class="flex items-center gap-2 text-muted-foreground">
+                        <BookDashed class="size-4" />
+                        You haven't read this book yet
+                    </div>
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        :disabled="isLoading"
+                        @click="readBook(true)"
+                    >
+                        Mark as read
+                    </Button>
+                </div>
+                <div class="flex items-center gap-4">
+                    <Button
+                        variant="destructive-outline"
+                        size="sm"
+                        @click="showReallyDelete = true"
+                    >
+                        <Trash2 class="size-4" />
+                        Delete
+                    </Button>
+                    <div
+                        v-if="showReallyDelete"
+                        class="flex items-center gap-2"
+                    >
+                        Do you really want to delete this book?
+                        <Button
+                            variant="destructive-outline"
+                            size="sm"
+                            :disabled="isLoading"
+                            @click="removeBook()"
+                        >
+                            Yes
+                        </Button>
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            @click="showReallyDelete=false"
+                        >
+                            No
+                        </Button>
+                    </div>
+                </div>
+            </div>
+
             <div class="clear-both">
                 <img
                     v-if="vi.imageLinks?.thumbnail"
@@ -22,108 +124,6 @@
                     class="prose"
                     v-html="vi.description"
                 />
-
-                <div class="mt-4 grid gap-2">
-                    <div
-                        v-if="book.list === BookListEnum.Values.LIBRARY"
-                        class="flex items-center gap-4"
-                    >
-                        <div class="flex items-center gap-2 text-success">
-                            <CheckCircle class="size-4" />
-                            This book is in your library
-                        </div>
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            :disabled="isLoading"
-                            @click="setList(BookListEnum.Values.WISHLIST)"
-                        >
-                            Move to wishlist
-                        </Button>
-                    </div>
-                    <div
-                        v-else-if="book.list === BookListEnum.Values.WISHLIST"
-                        class="flex items-center gap-4"
-                    >
-                        <div class="flex items-center gap-2 text-muted-foreground">
-                            <Scroll class="size-4" />
-                            This book is on your wishlist
-                        </div>
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            :disabled="isLoading"
-                            @click="setList(BookListEnum.Values.LIBRARY)"
-                        >
-                            Add to library
-                        </Button>
-                    </div>
-                    <div
-                        v-if="book.is_read"
-                        class="flex items-center gap-4"
-                    >
-                        <div class="flex items-center gap-2 text-success">
-                            <BookCheck class="size-4" />
-                            You've read the book
-                        </div>
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            :disabled="isLoading"
-                            @click="readBook(false)"
-                        >
-                            Mark as unread
-                        </Button>
-                    </div>
-                    <div
-                        v-else
-                        class="flex items-center gap-4"
-                    >
-                        <div class="flex items-center gap-2 text-muted-foreground">
-                            <BookDashed class="size-4" />
-                            You haven't read this book yet
-                        </div>
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            :disabled="isLoading"
-                            @click="readBook(true)"
-                        >
-                            Mark as read
-                        </Button>
-                    </div>
-                    <div class="flex items-center gap-4">
-                        <Button
-                            variant="destructive-outline"
-                            size="sm"
-                            @click="showReallyDelete = true"
-                        >
-                            <Trash2 class="size-4" />
-                            Delete
-                        </Button>
-                        <div
-                            v-if="showReallyDelete"
-                            class="flex items-center gap-2"
-                        >
-                            Do you really want to delete this book?
-                            <Button
-                                variant="destructive-outline"
-                                size="sm"
-                                :disabled="isLoading"
-                                @click="removeBook()"
-                            >
-                                Yes
-                            </Button>
-                            <Button
-                                variant="outline"
-                                size="sm"
-                                @click="showReallyDelete=false"
-                            >
-                                No
-                            </Button>
-                        </div>
-                    </div>
-                </div>
             </div>
 
             <Table>
