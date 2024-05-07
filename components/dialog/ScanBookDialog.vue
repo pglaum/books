@@ -17,6 +17,7 @@
                     key-key="label"
                     :value-key="null"
                     label-key="label"
+                    @update:model-value="updateCookie()"
                 />
                 <ClientOnly>
                     <QrcodeStream
@@ -72,10 +73,15 @@ onMounted(async () => {
     devices.value = (await navigator.mediaDevices.enumerateDevices()).filter(
         ({ kind, }) => kind === 'videoinput'
     )
-    console.log(devices.value)
 
     if (devices.value.length > 0) {
-        selectedDevice.value = devices.value[0]
+        const selectedCamera = useCookie('selected-camera').value
+        if (selectedCamera) {
+            selectedDevice.value = devices.value.find((device) => device.label === selectedCamera)
+        }
+        if (!selectedDevice.value) {
+            selectedDevice.value = devices.value[0]
+        }
     }
 })
 
@@ -118,5 +124,9 @@ const onError = (err: Error): void => {
     } else {
         error.value += err.message
     }
+}
+
+const updateCookie = () => {
+    useCookie('selected-camera').value = selectedDevice.value?.label ?? null
 }
 </script>
