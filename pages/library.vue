@@ -111,7 +111,7 @@ const compare = (a, b) => {
 
 const loadBooks = async () => {
     libraryLoading.value = true
-    library.value = (await getBooks(BookListEnum.Values.LIBRARY)).sort((a, b) => {
+    library.value = (await getBooks(BookListEnum.Values.LIBRARY, 0)).sort((a, b) => {
         switch (orderBy.value) {
             case 'created':
                 return compare(b.created_at, a.created_at)

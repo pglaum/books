@@ -45,7 +45,7 @@ const emit = defineEmits<{
 }>()
 
 const props = defineProps<{
-    modelValue: string
+    modelValue: string | null
 }>()
 const { modelValue, } = toRefs(props)
 

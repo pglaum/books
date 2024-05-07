@@ -59,6 +59,13 @@
                         </div>
                     </div>
 
+                    <div>
+                        <CheckInput
+                            v-model="moreOptions"
+                            label="More options"
+                        />
+                    </div>
+
                     <div class="flex items-center gap-x-4 gap-y-2">
                         <Button
                             v-if="!book.events?.find((event) => event.event === BookEventTypeEnum.Values.BOUGHT)"
@@ -71,6 +78,16 @@
                             Add to library
                         </Button>
                         <Button
+                            v-if="book.list === BookListEnum.Values.LIBRARY && moreOptions"
+                            :disabled="isLoading"
+                            variant="outline"
+                            size="sm"
+                            @click="moveToWishlist()"
+                        >
+                            <Scroll class="size-4" />
+                            Move to wishlist
+                        </Button>
+                        <Button
                             :disabled="isLoading"
                             variant="outline"
                             size="sm"
@@ -79,10 +96,6 @@
                             <BookCheck class="size-4" />
                             Read
                         </Button>
-                        <CheckInput
-                            v-model="moreOptions"
-                            label="More options"
-                        />
                     </div>
 
                     <div class="divide-y">
@@ -224,6 +237,7 @@ const isLoading = ref<boolean>(false)
 const isOpen = ref<boolean>(false)
 const moreOptions = ref<boolean>(false)
 const showReallyDelete = ref<boolean>(false)
+console.log(book.value)
 
 const vi = computed(() => book.value.google_book_data.volumeInfo)
 
@@ -239,6 +253,17 @@ const addToLibrary = async () => {
                 event: BookEventTypeEnum.Values.BOUGHT,
             },
         ],
+    })
+    book.value = BookSchema.parse(data)
+    isLoading.value = false
+}
+
+const moveToWishlist = async () => {
+    isLoading.value = true
+    const events = book.value.events?.filter((event) => event.event !== BookEventTypeEnum.Values.BOUGHT) ?? []
+    const { data, } = await patchBook(book.value.id, {
+        list: BookListEnum.Values.WISHLIST,
+        events: events,
     })
     book.value = BookSchema.parse(data)
     isLoading.value = false

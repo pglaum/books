@@ -4,7 +4,7 @@
         @click="dialogStore.showDialog('stored-book', book)"
     >
         <CheckCircle
-            v-if="book.is_read"
+            v-if="book.events?.find((event) => event.event === BookEventTypeEnum.Values.READ)"
             class="absolute right-4 top-4 size-4 text-success"
         />
 
@@ -31,7 +31,7 @@
 <script setup lang="ts">
 import { CheckCircle, ImageOff, } from 'lucide-vue-next'
 
-import { type Book, } from '~/lib/entities/book'
+import { type Book, BookEventTypeEnum, } from '~/lib/entities/book'
 
 const props = defineProps<{
     book: Book

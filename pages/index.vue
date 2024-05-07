@@ -129,7 +129,7 @@
 <script setup lang="ts">
 import { ArrowRight, Barcode, Loader2, Search, } from 'lucide-vue-next'
 
-import { getBooks, getBooksByIds, } from '~/lib/api/book'
+import { getBooks, } from '~/lib/api/book'
 import { type Book, BookListEnum, } from '~/lib/entities/book'
 
 const router = useRouter()
@@ -153,23 +153,22 @@ const doSearch = () => {
 
 const loadBooks = () => {
     configStore.getWishlistOrder().then((order) => {
-        if (order) {
-            getBooksByIds(order.slice(0, 5)).then((result) => {
+        getBooks(BookListEnum.Values.WISHLIST, 0).then((result) => {
+            if (order) {
                 wishlist.value = []
+                let found = 0
                 order.forEach((id) => {
                     const book = result.find((b) => b.id === id)
-                    if (book) {
+                    if (book && found < 5) {
+                        found += 1
                         wishlist.value.push(book)
                     }
                 })
-                wishlistLoading.value = false
-            })
-        } else {
-            getBooks(BookListEnum.Values.WISHLIST).then((result) => {
+            } else {
                 wishlist.value = result
-                wishlistLoading.value = false
-            })
-        }
+            }
+            wishlistLoading.value = false
+        })
     })
     getBooks(BookListEnum.Values.LIBRARY).then((result) => {
         library.value = result
