@@ -24,7 +24,7 @@
                     variant="ghost"
                     size="icon"
                     class="absolute bottom-0 right-0"
-                    @click.prevent="inputValue == ''"
+                    @click.prevent="clear()"
                 >
                     <X class="size-4" />
                 </Button>
@@ -79,9 +79,9 @@ const props = withDefaults(defineProps<{
     description?: string
     required?: boolean
     allowClear?: boolean
-    keyKey: string
+    keyKey?: string
     valueKey?: string
-    labelKey: string
+    labelKey?: string
 }>(), {
     keyKey: 'value',
     valueKey: 'value',
@@ -100,4 +100,7 @@ const inputValue = computed({
         emit('update:modelValue', newValue)
     },
 })
+const clear = () => {
+    inputValue.value = ''
+}
 </script>

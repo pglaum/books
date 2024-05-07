@@ -114,7 +114,7 @@
         <ScanBookDialog
             v-if="scanBookDialogVisible"
             close-on-detect
-            @scanned="(e) => router.push(`/search?q=isbn:${e}`)"
+            @scanned="(e) => navigateTo({path: '/search', query: {q: `isbn:${e}`}})"
         />
         <SearchedBookDialog v-if="searchedBookDialogVisible" />
     </div>

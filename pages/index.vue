@@ -28,7 +28,17 @@
         </div>
 
         <div class="grid gap-4">
-            <H2>Wishlist</H2>
+            <div class="flex flex-wrap justify-between">
+                <H2>Wishlist</H2>
+
+                <NuxtLink
+                    class="inline-flex items-center gap-2 hover:underline"
+                    to="/wishlist"
+                >
+                    Show all
+                    <ArrowRight class="size-4" />
+                </NuxtLink>
+            </div>
 
             <div
                 v-if="wishlistLoading"
@@ -56,7 +66,18 @@
         </div>
 
         <div class="grid gap-4">
-            <H2>Library</H2>
+            <div class="flex flex-wrap justify-between">
+                <H2>Library</H2>
+
+                <NuxtLink
+                    class="inline-flex items-center gap-2 hover:underline"
+                    to="/library"
+                >
+                    Show all
+                    <ArrowRight class="size-4" />
+                </NuxtLink>
+            </div>
+
 
             <div
                 v-if="libraryLoading"
@@ -96,7 +117,7 @@
 </template>
 
 <script setup lang="ts">
-import { Barcode, Loader2, Search, } from 'lucide-vue-next'
+import { ArrowRight, Barcode, Loader2, Search, } from 'lucide-vue-next'
 
 import { getBooks, } from '~/lib/api/book'
 import { type Book, BookListEnum, } from '~/lib/entities/book'

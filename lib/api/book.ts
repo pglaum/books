@@ -115,18 +115,35 @@ export const findBook = async (googleBookId: string) => {
     }
 }
 
-export const getBooks = async (list: BookList) => {
+export const getBooks = async (list: BookList, limit: number = 5, orderBy: string = 'updated') => {
     const supabase = useSupabaseClient()
     const user = useSupabaseUser()
     const { toast, } = useToast()
 
-    const { data, error, } = await supabase
+    let query = supabase
         .from('book')
         .select()
         .eq('user_id', user.value.id)
-        .eq('list', list)
         .order('updated_at', { ascending: false, })
-        .limit(5)
+
+    if (list) {
+        query = query.eq('list', list)
+    }
+
+    if (limit > 0) {
+        query = query.limit(limit)
+    }
+
+    switch (orderBy) {
+        case 'updated':
+            query = query.order('updated_at', { ascending: false, })
+            break
+        case 'created':
+            query = query.order('created_at', { ascending: false, })
+            break
+    }
+
+    const { data, error, } = await query
 
     if (error) {
         toast({
@@ -134,6 +151,7 @@ export const getBooks = async (list: BookList) => {
             description: error.message,
             variant: 'destructive',
         })
+        console.log(error)
         return []
     } else {
         return data.map((value) => BookSchema.parse(value))
