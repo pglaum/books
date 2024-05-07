@@ -129,10 +129,13 @@
 <script setup lang="ts">
 import { ArrowRight, Barcode, Loader2, Search, } from 'lucide-vue-next'
 
-import { getBooks, } from '~/lib/api/book'
+import { getBooks, getBooksByIds, } from '~/lib/api/book'
 import { type Book, BookListEnum, } from '~/lib/entities/book'
 
 const router = useRouter()
+
+const configStore = useConfigStore()
+
 const dialogStore = useDialogStore()
 const scanBookDialogVisible = dialogStore.isVisibleComputed('scan-book')
 const storedBookDialogVisible = dialogStore.isVisibleComputed('stored-book')
@@ -149,13 +152,29 @@ const doSearch = () => {
 }
 
 const loadBooks = () => {
+    configStore.getWishlistOrder().then((order) => {
+        console.log('configstore', order)
+        if (order) {
+            getBooksByIds(order.slice(0, 5)).then((result) => {
+                wishlist.value = []
+                order.forEach((id) => {
+                    const book = result.find((b) => b.id === id)
+                    if (book) {
+                        wishlist.value.push(book)
+                    }
+                })
+                wishlistLoading.value = false
+            })
+        } else {
+            getBooks(BookListEnum.Values.WISHLIST).then((result) => {
+                wishlist.value = result
+                wishlistLoading.value = false
+            })
+        }
+    })
     getBooks(BookListEnum.Values.LIBRARY).then((result) => {
         library.value = result
         libraryLoading.value = false
-    })
-    getBooks(BookListEnum.Values.WISHLIST).then((result) => {
-        wishlist.value = result
-        wishlistLoading.value = false
     })
 }
 

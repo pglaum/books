@@ -115,6 +115,30 @@ export const findBook = async (googleBookId: string) => {
     }
 }
 
+export const getBooksByIds = async (ids: Array<string>) => {
+    const supabase = useSupabaseClient()
+    const { toast, } = useToast()
+
+    const query = supabase
+        .from('book')
+        .select()
+        .in('id', ids)
+
+    const { data, error, } = await query
+
+    if (error) {
+        toast({
+            title: 'Error fetching books',
+            description: error.message,
+            variant: 'destructive',
+        })
+        console.log(error)
+        return []
+    } else {
+        return data.map((value) => BookSchema.parse(value))
+    }
+}
+
 export const getBooks = async (list: BookList, limit: number = 5, orderBy: string = 'updated') => {
     const supabase = useSupabaseClient()
     const user = useSupabaseUser()

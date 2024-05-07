@@ -86,7 +86,6 @@ const library = ref<Book[]>([])
 const libraryLoading = ref<boolean>(true)
 const isLoading = ref<boolean>(false)
 
-const dragging = ref<boolean>(false)
 const orderBy = ref<string>(route.query.orderBy?.toString() ?? 'title')
 const orderByOptions = ref([
     { value: 'created', label: 'Created At', },
@@ -138,11 +137,6 @@ const reloadPage = () => {
     }
     navigateTo(navTo)
     loadBooks()
-}
-
-const saveOrder = () => {
-    isLoading.value = true
-    isLoading.value = false
 }
 
 onMounted(() => {
