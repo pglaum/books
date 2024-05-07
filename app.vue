@@ -8,11 +8,11 @@
 
 <script setup lang="ts">
 useSeoMeta({
-    title: 'Gyrnal',
-    ogTitle: 'Gyrnal',
-    description: 'Empower your workouts, chronicle your success!',
-    ogDescription: 'Empower your workouts, chronicle your success!',
-    ogImage: '/gyrnal_logo.png',
+    title: 'Books',
+    ogTitle: 'Books',
+    description: 'Track your books',
+    ogDescription: 'Track your books',
+    ogImage: '/favicon.svg',
     twitterCard: 'summary_large_image',
 })
 </script>

@@ -85,6 +85,6 @@ onMounted(() => {
 })
 
 useHead({
-    title: 'Login to Gyrnal',
+    title: 'Login to Books',
 })
 </script>

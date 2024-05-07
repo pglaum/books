@@ -86,6 +86,6 @@ onMounted(() => {
 })
 
 useHead({
-    title: 'Register with Gyrnal',
+    title: 'Register with Books',
 })
 </script>
