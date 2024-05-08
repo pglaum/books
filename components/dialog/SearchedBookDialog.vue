@@ -278,16 +278,19 @@ const createBook = async (inLibrary: boolean, read: boolean) => {
         google_book_id: book.value.id,
         google_book_data: googleBook.value,
         list: inLibrary ? BookListEnum.Values.LIBRARY : BookListEnum.Values.WISHLIST,
-        events: [
-            inLibrary && {
-                event: BookEventTypeEnum.Values.BOUGHT,
-                date: null,
-            },
-            read && {
-                event: BookEventTypeEnum.Values.READ,
-                date: null,
-            },
-        ],
+        events: [],
+    }
+    if (inLibrary) {
+        newBookData.events.push({
+            event: BookEventTypeEnum.Values.BOUGHT,
+            date: null,
+        })
+    }
+    if (read) {
+        newBookData.events.push({
+            event: BookEventTypeEnum.Values.READ,
+            date: null,
+        })
     }
     const newBook = BookSchema.parse(newBookData)
     insertBook(newBook)
