@@ -24,6 +24,13 @@
         <DropdownMenuContent class="w-56">
             <DropdownMenuItem
                 class="flex gap-2"
+                @click="navigateTo('/inventory-mode')"
+            >
+                <Stamp class="size-4" />
+                Inventory mode
+            </DropdownMenuItem>
+            <DropdownMenuItem
+                class="flex gap-2"
                 @click="navigateTo('/statistics')"
             >
                 <AreaChartIcon class="size-4" />
@@ -43,6 +50,7 @@
 <script setup lang="ts">
 import { AreaChartIcon, ChevronDown,
          LogOut,
+         Stamp,
          UserRound, } from 'lucide-vue-next'
 
 import { toast, } from '~/components/ui/toast'
