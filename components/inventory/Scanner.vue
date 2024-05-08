@@ -72,6 +72,7 @@ onMounted(async () => {
 
 const onDetect = (detectedCodes: Array<DetectedBarcode>) => {
     try {
+        console.log('scanned', detectedCodes)
         const isbn = detectedCodes[0].rawValue
         emit('scanned', isbn)
         if (closeOnDetect.value) {
