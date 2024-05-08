@@ -25,6 +25,7 @@
             <SelectInput
                 v-model="orderBy"
                 :options="orderByOptions"
+                :disabled="isLoading"
                 label="Order by"
                 placeholder="Manual"
                 class="max-w-48"
@@ -39,6 +40,7 @@
                     v-if="!reorderItems"
                     variant="outline"
                     size="sm"
+                    :disabled="isLoading"
                     @click="reorderItems=true"
                 >
                     Reorder
@@ -207,6 +209,7 @@ const saveOrder = () => {
     isLoading.value = true
     const order = wishlist.value.map((book) => book.id)
     configStore.setWishlistOrder(order)
+    reorderItems.value = false
     isLoading.value = false
 }
 
