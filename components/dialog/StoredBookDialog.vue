@@ -120,7 +120,10 @@
                             >
                                 {{ event.event }}
                             </Badge>
-                            <DateInput v-model="event.date" />
+                            <DateInput
+                                v-model="event.date"
+                                @update:model-value="updateEvents()"
+                            />
                             <Button
                                 v-if="event.date"
                                 :disabled="isLoading"

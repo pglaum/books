@@ -54,7 +54,9 @@ const inputValue = computed({
         return modelValue.value ? parseDate(modelValue.value) : null
     },
     set (newValue: CalendarDate) {
-        emit('update:modelValue', newValue.toString())
+        if (newValue) {
+            emit('update:modelValue', newValue.toString())
+        }
         isOpen.value = false
     },
 })
