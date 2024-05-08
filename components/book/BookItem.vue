@@ -1,6 +1,6 @@
 <template>
     <div
-        class="relative grid cursor-pointer gap-1 rounded p-2 transition-colors hover:bg-muted/50"
+        class="relative grid cursor-pointer gap-2 rounded p-2 transition-colors hover:bg-muted/50"
         @click="dialogStore.showDialog('stored-book', book)"
     >
         <CheckCircle
@@ -8,7 +8,7 @@
             class="absolute right-4 top-4 size-4 text-success"
         />
 
-        <div class="mx-auto aspect-[3/4] w-1/2">
+        <div class="mx-auto aspect-[3/4] h-48">
             <img
                 v-if="vi.imageLinks?.thumbnail"
                 :src="vi.imageLinks.thumbnail"
@@ -16,7 +16,7 @@
             >
             <div
                 v-else
-                class="flex size-full items-center justify-center bg-muted"
+                class="flex size-full items-center justify-center border border-border bg-muted"
             >
                 <ImageOff class="size-8 text-muted-foreground" />
             </div>

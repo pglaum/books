@@ -181,9 +181,11 @@
                             </Badge>
                         </div>
 
-                        <div class="h-48 sm:hidden">
+                        <div
+                            v-if="result.volumeInfo.imageLinks?.thumbnail"
+                            class="h-48 sm:hidden"
+                        >
                             <img
-                                v-if="result.volumeInfo.imageLinks?.thumbnail"
                                 :src="result.volumeInfo.imageLinks?.thumbnail"
                                 class="size-full object-contain"
                             >
