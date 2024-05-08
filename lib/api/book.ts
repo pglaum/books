@@ -1,23 +1,27 @@
 import { type Book, type BookList, BookSchema, } from "@/lib/entities/book"
 import { useToast, } from "~/components/ui/toast"
 
-export const insertBook = async (book: Book) => {
+export const insertBook = async (book: Book, showToast: boolean = true) => {
     const supabase = useSupabaseClient()
     const { toast, } = useToast()
 
     const { data, error, } = await supabase.from('book').insert(book).select().single()
 
     if (error) {
-        toast({
-            title: 'Error saving book',
-            description: error.message,
-            variant: 'destructive',
-        })
+        if (showToast) {
+            toast({
+                title: 'Error saving book',
+                description: error.message,
+                variant: 'destructive',
+            })
+        }
     } else {
-        toast({
-            title: 'Book saved',
-            variant: 'success',
-        })
+        if (showToast) {
+            toast({
+                title: 'Book saved',
+                variant: 'success',
+            })
+        }
     }
 
     return { data, error, }
@@ -45,23 +49,27 @@ export const updateBook = async (book: Book) => {
     return { data, error, }
 }
 
-export const patchBook = async (id: string, values: object) => {
+export const patchBook = async (id: string, values: object, showToast: boolean = true) => {
     const supabase = useSupabaseClient()
     const { toast, } = useToast()
 
     const { data, error, } = await supabase.from('book').update(values).eq('id', id).select().single()
 
     if (error) {
-        toast({
-            title: 'Error saving book',
-            description: error.message,
-            variant: 'destructive',
-        })
+        if (showToast) {
+            toast({
+                title: 'Error saving book',
+                description: error.message,
+                variant: 'destructive',
+            })
+        }
     } else {
-        toast({
-            title: 'Updated book',
-            variant: 'success',
-        })
+        if (showToast) {
+            toast({
+                title: 'Updated book',
+                variant: 'success',
+            })
+        }
     }
 
     return { data, error, }

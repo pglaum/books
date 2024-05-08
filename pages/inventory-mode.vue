@@ -15,10 +15,15 @@
             </Blockquote>
         </div>
 
-        <div>
+        <div class="flex gap-4">
             <CheckInput
                 v-model="toLibrary"
                 label="Save to library"
+            />
+            <CheckInput
+                v-if="toLibrary"
+                v-model="setCurrentDate"
+                label="Set current date"
             />
         </div>
 
@@ -120,14 +125,7 @@
 
         <template v-if="showSearchResults">
             <div
-                v-if="isLoading"
-                class="flex items-center justify-center gap-2"
-            >
-                <Loader2 class="size-4 animate-spin" />
-                Loading
-            </div>
-            <div
-                v-else-if="results.length"
+                v-if="results.length"
                 class="divide-y divide-border rounded-lg border border-border"
             >
                 <div
@@ -140,7 +138,7 @@
                         p-4
                         transition-colors
                         hover:bg-muted/50"
-                    @click="console.log('add book')"
+                    @click="addBook(result)"
                 >
                     <div class="hidden aspect-[3/4] h-48 sm:block">
                         <img
@@ -210,7 +208,7 @@
                                 v-if="toLibrary"
                                 variant="primary-outline"
                                 class="w-full sm:w-fit"
-                                @click.stop.prevent="console.log('save book')"
+                                @click.stop.prevent="addBook(result)"
                             >
                                 <Library class="size-4" />
                                 Save to library
@@ -219,7 +217,7 @@
                                 v-else
                                 variant="primary-outline"
                                 class="w-full sm:w-fit"
-                                @click.stop.prevent="console.log('save book')"
+                                @click.stop.prevent="addBook(result)"
                             >
                                 <Scroll class="size-4" />
                                 Save to wishlist
@@ -228,7 +226,7 @@
                                 v-if="toLibrary"
                                 variant="primary-outline"
                                 class="w-full sm:w-fit"
-                                @click.stop.prevent="console.log('save as read')"
+                                @click.stop.prevent="addBook(result, true)"
                             >
                                 <BookCheck class="size-4" />
                                 Save as read
@@ -248,9 +246,13 @@
 </template>
 
 <script setup lang="ts">
+import { getLocalTimeZone, today, } from '@internationalized/date'
 import { Barcode, BookCheck, ImageOff, Library, Loader2, RotateCcw, Scroll, Search, } from 'lucide-vue-next'
 
-import { searchBooks, } from '~/lib/api/googleBooks'
+import { useToast, } from '~/components/ui/toast'
+import { findBook, insertBook, patchBook, } from '~/lib/api/book'
+import { getGoogleBook, searchBooks, } from '~/lib/api/googleBooks'
+import { type BookEvent, BookEventTypeEnum, BookListEnum, BookSchema,  } from '~/lib/entities/book'
 import { type BookVolume, } from '~/lib/entities/googleBooks'
 
 const isbn = ref<string>()
@@ -259,11 +261,11 @@ const isLoading = ref<boolean>(false)
 const showSearchResults = ref<boolean>(false)
 const toLibrary = ref<boolean>(true)
 const hideHint = ref<boolean>(false)
-
-const dialogStore = useDialogStore()
+const setCurrentDate = ref<boolean>(false)
 
 const searchResultsStore = useSearchResultsStore()
 const { results, }: {results: Ref<BookVolume[]>} = storeToRefs(searchResultsStore)
+const { toast, } = useToast()
 
 const searchIsbn = (value: string) => {
     isbn.value = value
@@ -274,8 +276,8 @@ const searchIsbn = (value: string) => {
 const doSearch = async () => {
     isLoading.value = true
     if (query.value) {
-        showSearchResults.value = true
         results.value = await searchBooks(query.value)
+        showSearchResults.value = true
     }
     isLoading.value = false
 }
@@ -285,6 +287,93 @@ const resetPage = () => {
     query.value = ''
     results.value = []
     showSearchResults.value = false
+}
+
+const addBook = async (book: BookVolume, isRead?: boolean) => {
+    if (isLoading.value) {
+        return
+    }
+
+    isLoading.value = true
+    const existingBook = await findBook(book.id)
+    const bookList = toLibrary.value ? BookListEnum.Values.LIBRARY : BookListEnum.Values.WISHLIST
+    let message = 'hallo'
+    if (existingBook) {
+        const updateData = {}
+        console.log('existingBook', existingBook, bookList)
+        if (existingBook.list === bookList) {
+            // if the user clicked `read`, and the book wasn't read yet, we add it.
+            // if the user didn't click `read`, but the book was read alrady, we DON'T delete it
+            // if the user didn't click `read`, and the book wasn't read, we don't care
+            if (isRead && !existingBook.events?.find((event) => event.event === BookEventTypeEnum.Values.READ)) {
+                updateData.events = existingBook.events ?? []
+                updateData.events.push({
+                    event: BookEventTypeEnum.Values.READ,
+                    date: setCurrentDate.value ? today(getLocalTimeZone()).toString() : null,
+                })
+                message = 'Updated existing book as read.'
+            }
+        } else {
+            updateData.list = bookList
+            updateData.events = existingBook.events ?? []
+            if (bookList === BookListEnum.Values.LIBRARY) {
+                updateData.events.push({
+                    event: BookEventTypeEnum.Values.BOUGHT,
+                    date: setCurrentDate.value ? today(getLocalTimeZone()).toString() : null,
+                })
+            } else {
+                updateData.events = updateData.events.filter((event: BookEvent) => event.event !== BookEventTypeEnum.Values.BOUGHT)
+            }
+            if (isRead && !existingBook.events?.find((event) => event.event === BookEventTypeEnum.Values.READ)) {
+                updateData.events.push({
+                    event: BookEventTypeEnum.Values.READ,
+                    date: setCurrentDate.value ? today(getLocalTimeZone()).toString() : null,
+                })
+                message = 'Updated existing book list & read status'
+            } else {
+                message = 'Updated existing book list'
+            }
+        }
+        if (Object.keys(updateData).length) {
+            patchBook(existingBook.id, updateData, false)
+        } else {
+            message = 'No changes made (book already in correct list & status)'
+        }
+    } else {
+        const googleBook = await getGoogleBook(book.id)
+
+        // create book
+        const newBookData = {
+            google_book_id: book.id,
+            google_book_data: googleBook,
+            list: bookList,
+            events: [],
+        }
+        if (toLibrary.value) {
+            newBookData.events.push({
+                event: BookEventTypeEnum.Values.BOUGHT,
+                date: setCurrentDate.value ? today(getLocalTimeZone()).toString() : null,
+            })
+        }
+        if (isRead) {
+            newBookData.events.push({
+                event: BookEventTypeEnum.Values.READ,
+                date: setCurrentDate.value ? today(getLocalTimeZone()).toString() : null,
+            })
+        }
+        const newBook = BookSchema.parse(newBookData)
+        await insertBook(newBook, false)
+        message = 'Added the new book!'
+    }
+
+    toast({
+        description: message,
+        variant: 'success',
+    })
+
+    resetPage()
+
+    isLoading.value = false
 }
 
 onMounted(() => {
