@@ -19,6 +19,7 @@
                 v-if="selectedDevice !== null"
                 :constraints="{deviceId: selectedDevice.deviceId}"
                 :formats="['ean_13']"
+                :track="track"
                 @error="onError"
                 @detect="onDetect"
             />
@@ -73,7 +74,11 @@ onMounted(async () => {
 const onDetect = (detectedCodes: Array<DetectedBarcode>) => {
     try {
         console.log('scanned', detectedCodes)
-        const isbn = detectedCodes[0].rawValue
+        let isbn = detectedCodes[0].rawValue
+        if (isbn.length === 19) {
+            // the price code was also copied. remove it.
+            isbn = isbn.substring(0, 13)
+        }
         emit('scanned', isbn)
         if (closeOnDetect.value) {
             dialogStore.closeDialog()
@@ -112,5 +117,9 @@ const onError = (err: Error): void => {
 
 const updateCookie = () => {
     useCookie('selected-camera').value = selectedDevice.value?.label ?? null
+}
+
+const track = () => {
+    // just to have the faster framerates
 }
 </script>
