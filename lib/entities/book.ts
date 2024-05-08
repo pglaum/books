@@ -30,4 +30,6 @@ export const BookSchema = z.object({
 })
 
 export type BookList = z.infer<typeof BookListEnum>
+export type BookEventType = z.infer<typeof BookEventTypeEnum>
+export type BookEvent = z.infer<typeof BookEventSchema>
 export type Book = z.infer<typeof BookSchema>

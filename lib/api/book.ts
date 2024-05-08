@@ -138,7 +138,7 @@ export const getBooksByIds = async (ids: Array<string>) => {
     }
 }
 
-export const getBooks = async (list: BookList, limit: number = 5, orderBy: string = 'updated') => {
+export const getBooks = async (list?: BookList, limit: number = 5, orderBy: string = 'updated') => {
     const supabase = useSupabaseClient()
     const user = useSupabaseUser()
     const { toast, } = useToast()

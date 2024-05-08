@@ -24,6 +24,13 @@
         <DropdownMenuContent class="w-56">
             <DropdownMenuItem
                 class="flex gap-2"
+                @click="navigateTo('/statistics')"
+            >
+                <AreaChartIcon class="size-4" />
+                Statistics
+            </DropdownMenuItem>
+            <DropdownMenuItem
+                class="flex gap-2"
                 @click="signOut"
             >
                 <LogOut class="size-4" />
@@ -34,7 +41,7 @@
 </template>
 
 <script setup lang="ts">
-import { ChevronDown,
+import { AreaChartIcon, ChevronDown,
          LogOut,
          UserRound, } from 'lucide-vue-next'
 

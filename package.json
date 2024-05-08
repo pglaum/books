@@ -12,6 +12,8 @@
   "dependencies": {
     "@internationalized/date": "^3.5.3",
     "@pinia/nuxt": "^0.5.1",
+    "@unovis/ts": "^1.4.0",
+    "@unovis/vue": "^1.4.0",
     "@vueuse/core": "^10.9.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
