@@ -19,7 +19,7 @@
     "clsx": "^2.1.1",
     "lucide-vue-next": "^0.372.0",
     "nuxt": "^3.11.2",
-    "radix-vue": "^1.7.2",
+    "radix-vue": "^1.7.4",
     "rfs": "^10.0.0",
     "shadcn-nuxt": "^0.10.2",
     "tailwind-merge": "^2.3.0",

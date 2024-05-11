@@ -1,12 +1,10 @@
 <template>
-    <Dialog
-        v-model:open="open"
-    >
+    <Dialog v-model:open="open">
         <DialogContent
             class="w-full grid-rows-[auto_minmax(0,1fr)_auto] p-0"
             :class="[
                 fullscreen ? 'max-w-full' : large ? 'max-w-3xl' : 'max-w-xl',
-                fullscreen ? 'h-full max-h-full sm:rounded-none' : 'h-full max-h-full sm:h-fit sm:max-h-[90dvh]'
+                fullscreen ? 'h-full max-h-full sm:rounded-none' : 'h-dvh max-h-dvh md:h-fit md:max-h-[90dvh]'
             ]"
         >
             <DialogHeader class="p-6 pb-0">

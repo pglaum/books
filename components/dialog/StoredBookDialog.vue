@@ -12,7 +12,7 @@
 
         <template #body>
             <div class="flex flex-col gap-4">
-                <div class="flex flex-col items-start justify-start gap-4 sm:flex-row">
+                <div class="flex flex-col items-center justify-start gap-4 sm:flex-row sm:items-start">
                     <div
                         v-if="vi.imageLinks?.thumbnail"
                         class="aspect-[3/4] h-48"
@@ -23,7 +23,7 @@
                         >
                     </div>
 
-                    <div class="grid gap-2">
+                    <div class="grid w-full gap-2">
                         <div
                             class="flex items-center gap-4"
                         >
@@ -42,9 +42,7 @@
                                 This book is on your wishlist
                             </div>
                         </div>
-                        <div
-                            class="flex items-center gap-4"
-                        >
+                        <div class="flex items-center gap-4">
                             <div
                                 v-if="book.events?.find((event) => event.event === BookEventTypeEnum.Values.READ)"
                                 class="flex items-center gap-2 text-success"
@@ -59,13 +57,6 @@
                                 <BookDashed class="size-4" />
                                 You haven't read this book yet
                             </div>
-                        </div>
-
-                        <div>
-                            <CheckInput
-                                v-model="moreOptions"
-                                label="More options"
-                            />
                         </div>
 
                         <div class="flex items-center gap-x-4 gap-y-2">
@@ -98,6 +89,10 @@
                                 <BookCheck class="size-4" />
                                 Read
                             </Button>
+                            <CheckInput
+                                v-model="moreOptions"
+                                label="More options"
+                            />
                         </div>
 
                         <div class="divide-y">
