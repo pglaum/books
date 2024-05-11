@@ -1,0 +1,9 @@
+services:
+  books:
+    build:
+      context: ./
+      dockerfile: dev.Dockerfile
+    volumes:
+      - ./:/nuxt
+    ports:
+      - 7300:3000
