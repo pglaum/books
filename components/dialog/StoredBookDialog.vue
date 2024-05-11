@@ -167,6 +167,102 @@
                     </div>
                 </div>
 
+                <div class="flex flex-col gap-4">
+                    <H4 class="flex gap-2">
+                        Notes
+                    </H4>
+
+                    <ClientOnly v-if="book.notes && book.notes.length">
+                        <draggable
+                            :animation="200"
+                            group="wishlist"
+                            ghost-class="bg-muted"
+                            handle=".handle"
+                            tag="div"
+                            class="flex flex-col gap-2"
+                            :list="book.notes"
+                            @start="dragging = true"
+                            @end="dragging = false"
+                            @change="saveNotes"
+                        >
+                            <div
+                                v-for="note, index in book.notes"
+                                :key="index"
+                                class="flex flex-col gap-2 bg-background"
+                            >
+                                <div class="flex items-center gap-2">
+                                    <GripVertical
+                                        class="size-4 hover:bg-muted/50"
+                                        :class="{
+                                            'handle': !isLoading,
+                                            'cursor-not-allowed': isLoading,
+                                        }"
+                                    />
+                                    <div class="w-full">
+                                        <TextAreaInput
+                                            v-if="index == editedNote"
+                                            v-model="noteValue"
+                                        />
+                                        <Blockquote v-else>
+                                            {{ note }}
+                                        </Blockquote>
+                                    </div>
+                                </div>
+                                <div class="flex justify-end gap-2">
+                                    <Button
+                                        v-if="index == editedNote"
+                                        variant="primary-outline"
+                                        size="sm"
+                                        :disabled="isLoading"
+                                        @click="saveNotes()"
+                                    >
+                                        Save
+                                    </Button>
+                                    <Button
+                                        v-else
+                                        variant="outline"
+                                        size="sm"
+                                        :disabled="isLoading"
+                                        @click="editNote(index)"
+                                    >
+                                        Edit
+                                    </Button>
+                                    <Button
+                                        v-if="index == editedNote"
+                                        variant="outline"
+                                        size="sm"
+                                        :disabled="isLoading"
+                                        @click="editedNote = -1"
+                                    >
+                                        Cancel
+                                    </Button>
+                                    <Button
+                                        v-else
+                                        variant="destructive-outline"
+                                        size="sm"
+                                        :disabled="isLoading"
+                                        @click="removeNote(index)"
+                                    >
+                                        Delete
+                                    </Button>
+                                </div>
+                            </div>
+                        </draggable>
+                    </ClientOnly>
+
+                    <div>
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            :disabled="isLoading"
+                            @click="addNote()"
+                        >
+                            <Plus class="size-4" />
+                            New note
+                        </Button>
+                    </div>
+                </div>
+
                 <Collapsible v-model:open="isOpen">
                     <CollapsibleTrigger
                         as-child
@@ -224,7 +320,7 @@
 
 <script setup lang="ts">
 import { getLocalTimeZone, today, } from '@internationalized/date'
-import { BookCheck, BookDashed, CheckCircle, ChevronsUpDown, Library, Scroll, Trash2, X, } from 'lucide-vue-next'
+import { BookCheck, BookDashed, CheckCircle, ChevronsUpDown, GripVertical, Library, Plus, Scroll, Trash2, X, } from 'lucide-vue-next'
 
 import { deleteBook, patchBook, } from '~/lib/api/book'
 import { type Book, BookListEnum, BookSchema,  } from '~/lib/entities/book'
@@ -237,7 +333,10 @@ const { dialogData: book, }: {dialogData: Ref<Book>} = storeToRefs(dialogStore)
 const isLoading = ref<boolean>(false)
 const isOpen = ref<boolean>(false)
 const moreOptions = ref<boolean>(false)
+const dragging = ref<boolean>(false)
 const showReallyDelete = ref<boolean>(false)
+const editedNote = ref<number>(-1)
+const noteValue = ref<string>()
 
 const vi = computed(() => book.value.google_book_data.volumeInfo)
 
@@ -309,5 +408,36 @@ const updateEvents = async () => {
     })
     book.value = BookSchema.parse(data)
     isLoading.value = false
+}
+
+const addNote = () => {
+    if (!book.value.notes) {
+        book.value.notes = []
+    }
+    book.value.notes.push('')
+    editedNote.value = book.value.notes.length - 1
+}
+
+const editNote = (idx: number) => {
+    noteValue.value = book.value.notes[idx]
+    editedNote.value = idx
+}
+
+const saveNotes = async () => {
+    isLoading.value = true
+    if (editedNote.value > -1) {
+        book.value.notes[editedNote.value] = noteValue.value
+        noteValue.value = ''
+    }
+    editedNote.value = -1
+    const notes = book.value.notes ?? []
+    const { data, } = await patchBook(book.value.id, { notes, })
+    book.value = BookSchema.parse(data)
+    isLoading.value = false
+}
+
+const removeNote = (idx: number) => {
+    book.value.notes.splice(idx, 1)
+    saveNotes()
 }
 </script>
