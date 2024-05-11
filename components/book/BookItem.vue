@@ -18,7 +18,7 @@
                 v-else
                 class="flex size-full items-center justify-center border border-border bg-muted"
             >
-                <ImageOff class="size-8 text-muted-foreground" />
+                <BookIcon class="size-12 text-muted-foreground" />
             </div>
         </div>
 
@@ -29,7 +29,7 @@
 </template>
 
 <script setup lang="ts">
-import { CheckCircle, ImageOff, } from 'lucide-vue-next'
+import { BookIcon, CheckCircle, } from 'lucide-vue-next'
 
 import { type Book, BookEventTypeEnum, } from '~/lib/entities/book'
 

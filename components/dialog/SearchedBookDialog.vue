@@ -11,7 +11,7 @@
         </template>
 
         <template #body>
-            <div class="flex-col gap-2">
+            <div class="flex flex-col gap-4">
                 <div
                     v-if="existingBook"
                     class="grid gap-2"
@@ -164,7 +164,7 @@
                 </div>
                 <div
                     v-else
-                    class="mt-4 flex flex-wrap gap-2"
+                    class="flex flex-wrap gap-2"
                 >
                     <Button
                         variant="primary-outline"
@@ -172,7 +172,7 @@
                         @click="createBook(false, false)"
                     >
                         <Scroll class="size-4" />
-                        Wishlist
+                        Save to wishlist
                     </Button>
                     <Button
                         variant="primary-outline"
@@ -180,7 +180,7 @@
                         @click="createBook(true, false)"
                     >
                         <Library class="size-4" />
-                        Library
+                        Put in library
                     </Button>
                     <Button
                         variant="primary-outline"
@@ -188,7 +188,7 @@
                         @click="createBook(true, true)"
                     >
                         <BookCheck class="size-4" />
-                        Library & read
+                        Mark as read & in library
                     </Button>
                 </div>
 
