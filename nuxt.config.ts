@@ -45,6 +45,7 @@ export default defineNuxtConfig({
     runtimeConfig: {
         public: {
             googleApiKey: '',
+            schema: 'public',
         },
     },
     shadcn: {
@@ -52,6 +53,11 @@ export default defineNuxtConfig({
         componentDir: './components/ui',
     },
     supabase: {
+        clientOptions: {
+            db: {
+                schema: process.env.NUXT_PUBLIC_SCHEMA ?? 'books',
+            },
+        },
         redirectOptions: {
             login: '/login',
             callback: '/confirm',
