@@ -154,7 +154,7 @@ const doSearch = () => {
 const loadBooks = () => {
     configStore.getWishlistOrder().then((order) => {
         getBooks(BookListEnum.Values.WISHLIST, 0).then((result) => {
-            if (order) {
+            if (order && Array.isArray(order) && order.length > 0) {
                 wishlist.value = []
                 let found = 0
                 order.forEach((id) => {
@@ -167,6 +167,11 @@ const loadBooks = () => {
             } else {
                 wishlist.value = result
             }
+            wishlistLoading.value = false
+        })
+    }).catch(() => {
+        getBooks(BookListEnum.Values.WISHLIST).then((result) => {
+            wishlist.value = result
             wishlistLoading.value = false
         })
     })

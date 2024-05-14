@@ -171,20 +171,24 @@ const loadBooks = async () => {
         return 0
     })
     if (orderBy.value === '') {
-        await configStore.getWishlistOrder()
-        const res: Array<Book> = []
-        wishlistOrder.value.forEach((id) => {
-            const idx = wishlist.value.findIndex((book) => book.id === id)
-            if (idx >= 0 && !res.find((b) => b.id === id)) {
-                res.push(wishlist.value[idx])
-            }
-        })
-        wishlist.value.forEach((book) => {
-            if (!res.find((b) => b.id === book.id)){
-                res.push(book)
-            }
-        })
-        wishlist.value = res
+        try {
+            await configStore.getWishlistOrder()
+            const res: Array<Book> = []
+            wishlistOrder.value.forEach((id) => {
+                const idx = wishlist.value.findIndex((book) => book.id === id)
+                if (idx >= 0 && !res.find((b) => b.id === id)) {
+                    res.push(wishlist.value[idx])
+                }
+            })
+            wishlist.value.forEach((book) => {
+                if (!res.find((b) => b.id === book.id)){
+                    res.push(book)
+                }
+            })
+            wishlist.value = res
+        } catch (e) {
+            console.error(e)
+        }
     }
     wishlistLoading.value = false
 }
