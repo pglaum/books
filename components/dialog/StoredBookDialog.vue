@@ -203,7 +203,10 @@
                                             v-if="index == editedNote"
                                             v-model="noteValue"
                                         />
-                                        <Blockquote v-else>
+                                        <Blockquote
+                                            v-else
+                                            class="whitespace-pre-line"
+                                        >
                                             {{ note }}
                                         </Blockquote>
                                     </div>
