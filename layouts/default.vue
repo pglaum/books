@@ -9,9 +9,14 @@
                     font-mono
                     font-medium
                     uppercase
-                    text-muted-foreground"
+                    text-muted-foreground
+                    transition-colors
+                    hover:text-foreground"
             >
-                <BookCopy class="size-6" />
+                <img
+                    src="/favicon.svg"
+                    class="size-6"
+                >
                 Books
             </NuxtLink>
             <div class="flex gap-4">
@@ -34,7 +39,6 @@
 </template>
 
 <script setup lang="ts">
-import { BookCopy, } from 'lucide-vue-next'
 
 const user = useSupabaseUser()
 </script>
