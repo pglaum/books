@@ -1,5 +1,3 @@
-version: '3'
-
 services:
   books:
     image: ghcr.io/pglaum/books:main

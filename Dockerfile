@@ -19,11 +19,12 @@ RUN echo "SUPABASE_KEY=${SUPABASE_KEY}" >> .env
 RUN source .env
 RUN yarn build
 
-ENTRYPOINT [ "node", ".output/server/index.mjs" ]
+FROM node:22-alpine as runner
 
-#RUN yarn generate
-#
-#FROM caddy:alpine
-#
-#COPY .docker/Caddyfile /etc/caddy/Caddyfile
-#COPY --from=builder /nuxt/.output/public /nuxt
+RUN mkdir /nuxt-app
+WORKDIR /nuxt-app
+
+COPY --from=builder /nuxt/.output /nuxt-app
+
+
+ENTRYPOINT [ "node", "server/index.mjs" ]
